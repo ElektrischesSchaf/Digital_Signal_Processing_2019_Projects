@@ -1,0 +1,10 @@
+func1(10);
+plot(func1(
+function signal=func1(n)
+    signal=[]
+    for i=1:n
+        temp=(0.9)^i
+        signal=[signal temp]
+        %x[i]=signal
+    end
+end

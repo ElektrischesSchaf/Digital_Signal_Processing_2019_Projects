@@ -1,6 +1,8 @@
 n=20
 [x,t]=func1(n);
 scatter(t,x);
+
+
 function [signal,timestamp]=func1(n)
     signal=[]
     timestamp=[];

@@ -15,7 +15,7 @@ filter_output=filter(B, A, x2);
 
 scatter(t, x); % plot for question 1 
 scatter(t, outputs); % response from difference equation
-%scatter(t2, filter_output); % response from filter function
+scatter(t2, filter_output); % response from filter function
 
 %generate x from 0 to 20
 function [signal,timestamp]=func1(n) 

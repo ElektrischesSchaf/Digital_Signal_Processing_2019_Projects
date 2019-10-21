@@ -1,6 +1,17 @@
-n=20
+n=20;
 [x,t]=func1(n);
-scatter(t,x);
+scatter(t, x);
+%fac_n=fac(x, n);
+outputs=[]
+
+output=func2(x, n); % return y[n]
+for i=1:20
+    outputs(i)=func2(x, i); % see all y[n] from n=1 to n=20
+end
+
+B=[1, 0.5]
+A=[1, -1.8*cos(3.14/16), 0.81]
+filter_output=filter(B, A, x);
 
 
 function [signal,timestamp]=func1(n)
@@ -23,11 +34,24 @@ function [signal,timestamp]=func1(n)
 end
 
 function y=func2(x, n)
-    if (n<0)
-        return 0;
-    elseif (n==0)
-        return 0;
+    fprintf('n= %d ' ,n)
+    fprintf(' x(n)=%d ',x(n) )
+    if n<3
+        fprintf(' n<2 \n')
+        y=0;
+    %elseif n==0
+    %    y=0;
     else
-        return 1.8*cos(pi/16)*func2(x, n-1)+0.81*fun
+        fprintf(1, '  in resursion  ')        
+        y=1.8.*cos(3.14/16).*func2(x, n-1)-0.81.*func2(x, n-2)+x(n)+0.5.*x(n-1);
+    end
+end
+function fn = fac(x, n)
+    haha=x(n)
+    n = floor(n);
+    if (n > 1)
+        fn = n * fac(x, n-1);
+    else
+        fn = 1;
     end
 end

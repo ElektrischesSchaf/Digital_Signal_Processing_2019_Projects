@@ -3,12 +3,19 @@ import numpy as np
 from scipy import signal
 from scipy.signal import lfilter, butter
 import matplotlib.pyplot as plt
+import scipy.io.wavfile as wavf
 
 signal_wave = wave.open('singing16k16bit-clean.wav', 'r')
 signal_wave_2=wave.open('singingWithPhoneRing16k16bit-noisy.wav', 'r')
-filtered_singing=wave.open('filtered_singing.wav', 'wb')
+filtered_singing=wave.open('filtered_singing.wav', 'w')
 
 sample_frequency = 16000
+
+print('input channels= ' , signal_wave.getnchannels(), '\n' )
+print('input width= ',signal_wave.getsampwidth(), '\n')
+print('input getnframes= ', signal_wave.getnframes(),'\n')
+print('input frame rate= ', signal_wave.getframerate(), '\n')
+
 
 data = np.fromstring(signal_wave.readframes(sample_frequency), dtype=np.int16)
 data_2=np.fromstring(signal_wave_2.readframes(sample_frequency), dtype=np.int16)
@@ -56,12 +63,21 @@ def butter_bandstop_filter(data, lowcut, highcut, fs, order):
     return y
 
 sig3=butter_bandstop_filter(sig2, 5000, 6500, sample_frequency, order=5)
-sig3=butter_bandstop_filter(sig3, 3500, 5000, sample_frequency, order=5)
+sig3=butter_bandstop_filter(sig3, 1000, 2000, sample_frequency, order=3)
+sig3=sig3.astype(np.int16) # very important!!
+
+#sig3=butter_bandpass_filter(sig2, 0, 5000, sample_frequency, order=5)
+
+#wavf.write('filtered_singing-2.wav', sample_frequency, sig3) # another way to export wav file
+
+print('\nlen of sig3: ', len(sig3), '\n')
 filtered_singing.setnchannels(1)
-filtered_singing.setsampwidth(1)
+filtered_singing.setsampwidth(2)
 filtered_singing.setframerate(sample_frequency)
-filtered_singing.writeframes(sig3)
+filtered_singing.setnframes( signal_wave_2.getnframes() )
+filtered_singing.writeframes( sig3.tostring() )
 filtered_singing.close()
+
 
 my_plot_width=20
 my_plot_height=15

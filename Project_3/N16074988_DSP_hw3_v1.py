@@ -5,18 +5,21 @@ from scipy.signal import lfilter, butter
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wavf
 
+# Read the imput and output wav files
 signal_wave = wave.open('singing16k16bit-clean.wav', 'r')
 signal_wave_2=wave.open('singingWithPhoneRing16k16bit-noisy.wav', 'r')
 filtered_singing=wave.open('filtered_singing.wav', 'w')
 
+# assign sample frequency explicitly
 sample_frequency = 16000
 
+# check attributes of the source wav file
 print('input channels= ' , signal_wave.getnchannels(), '\n' )
 print('input width= ',signal_wave.getsampwidth(), '\n')
 print('input getnframes= ', signal_wave.getnframes(),'\n')
 print('input frame rate= ', signal_wave.getframerate(), '\n')
 
-
+# transfer wav file to numpy array
 data = np.fromstring(signal_wave.readframes(sample_frequency), dtype=np.int16)
 data_2=np.fromstring(signal_wave_2.readframes(sample_frequency), dtype=np.int16)
 sig = signal_wave.readframes(-1)
@@ -62,15 +65,20 @@ def butter_bandstop_filter(data, lowcut, highcut, fs, order):
     y = lfilter(i, u, data)
     return y
 
+# using band stop filter to eliminate the noise frequency band
 sig3=butter_bandstop_filter(sig2, 5000, 6500, sample_frequency, order=5)
-sig3=butter_bandstop_filter(sig3, 1000, 2000, sample_frequency, order=3)
+sig3=butter_bandstop_filter(sig3, 1000, 2000, sample_frequency, order=5)
 sig3=sig3.astype(np.int16) # very important!!
 
+# Testing
 #sig3=butter_bandpass_filter(sig2, 0, 5000, sample_frequency, order=5)
 
-#wavf.write('filtered_singing-2.wav', sample_frequency, sig3) # another way to export wav file
+# another way to export wav file
+# wavf.write('filtered_singing-2.wav', sample_frequency, sig3) 
 
 print('\nlen of sig3: ', len(sig3), '\n')
+
+# Export the filtered audio file
 filtered_singing.setnchannels(1)
 filtered_singing.setsampwidth(2)
 filtered_singing.setframerate(sample_frequency)
@@ -81,6 +89,8 @@ filtered_singing.close()
 
 my_plot_width=20
 my_plot_height=15
+
+# plot spectrogram for the signal
 
 fig=plt.figure(1, figsize=(my_plot_width, my_plot_height))
 
